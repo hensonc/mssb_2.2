@@ -150,7 +150,7 @@ After loading we now have five data frames, one for the OD600 wavelength replica
 ### Step 1: organize (tidy) plate map as metadata
 Downstream processing expects R "tidy" data. Here we reorganize the values in the data frame into R-compliant format and re-label the readings with the Treament name rather than the plate well name. This will allow us to recognize replicates.
 
-```{r organize plate readings, echo=TRUE, message=FALSE}
+```{r organize_plate_readings, echo=TRUE, message=FALSE}
 # Reorganize the platemap
 platemap_tidy = platemap %>%
   pivot_longer(cols=2:13, names_to="wellcol", values_to="Treatment") %>%
@@ -217,7 +217,7 @@ nm540_590_all_msd$Treatment <- sub("", "nm540_", nm540_590_all_msd$Treatment)
 
 Currently the data is normalized but not filtered, we have seent there is error in the data, at least to the extent that the LB was contaminated and grew. Further the two excitations of mKate are not at the same wavelength, introducing detection artifacts.
 
-```{r plot plate readings, echo=TRUE, message=FALSE}
+```{r plot_plate_readings, echo=TRUE, message=FALSE}
 
 #OD600 readings
 myplot_od_all_msd = ggplot(od_all_msd, aes(x=Time, y=OD600_mean, group=Treatment, color=Treatment, text=Treatment)) +
@@ -400,7 +400,7 @@ Stat	observed value of the statistic
 P.Value	estimated p-value
 adj.P.Value	p-value adjusted for multiple testing
 
-```{r growth curve comparison, echo=TRUE}
+```{r growth_curve_comparison, echo=TRUE}
 # Do pairwise comparisons between groups of growth curves at OD600 using a permutation test.
 # 1 is plasmid 87
 # 2 is plasmid 261
@@ -430,7 +430,7 @@ To explore the toxicity of producing a fluorescent protein will test plasmid #2 
 
 This comparison is done with the R standard t-test, pairwise. Among the many combinations we found one with a p=0.03, which we plotted below.
 
-```{r growth curve fluorescent protein, echo=TRUE}
+```{r growth_curve_fluorescent_protein, echo=TRUE}
 # To explore the toxicity of producing a fluorescent protein will test growth of plasmid #2 
 # (261) as a control of carrying the burden of a plasmid against the burden of carrying a 
 # fluorescent plasmid in #1 (87) and #4 (75).
@@ -473,7 +473,8 @@ While the p-value led to exploring this plot, and it does appear to show a diffe
 ### Step 5: explore limits of detection
 
 Finally we explore the limits of detection given our experimental setup. We plot the detection of plasmid 261 without any integrase in the "mKate" channel (fluorescence intensity at 590 nm). We also plot the untransformed WT _E. coli_. We see the readings are non-zero in the channel, even when reading samples that should not be emitting fluorescence. 
-```{r limits of detection, echo=TRUE}
+
+```{r limits_of_detection, echo=TRUE}
 # To explore the limits of detection we will test fluorescence of plasmid #2 
 # (261) detected at 590nm (two plots for two excitation wavelengths).
 

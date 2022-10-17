@@ -5,6 +5,7 @@ date: "October 2022"
 output:
   html_document:
     code_folding: hide
+    keep_md: true
 ---
 
 

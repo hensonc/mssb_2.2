@@ -428,9 +428,7 @@ for ( treatment in my_treatments ) {
 
 To explore the toxicity of producing a fluorescent protein will test plasmid #2 (261) as a control of carrying the burden of a plasmid against the burden of carrying a fluorescent plasmid in #1 (87) and #4 (75).
 
-This comparison is done with the R package statmod, using the function compareGrowthCurves, which will do all pairwise comparisons between groups of growth curves using a permutation test and return observed statistics and the estimated p-value.
-
-Stat observed value of the statistic P.Value estimated p-value adj.P.Value p-value adjusted for multiple testing
+This comparison is done with the R standard t-test, pairwise. Among the many combinations we found one with a p=0.03, which we plotted below.
 
 ```{r growth curve fluorescent protein, echo=TRUE}
 # To explore the toxicity of producing a fluorescent protein will test growth of plasmid #2 
@@ -474,7 +472,7 @@ While the p-value led to exploring this plot, and it does appear to show a diffe
 
 ### Step 5: explore limits of detection
 
-Finally we explore the limits of detection given our experimental setup.
+Finally we explore the limits of detection given our experimental setup. We plot the detection of plasmid 261 without any integrase in the "mKate" channel (fluorescence intensity at 590 nm). We also plot the untransformed WT _E. coli_. We see the readings are non-zero in the channel, even when reading samples that should not be emitting fluorescence. 
 ```{r limits of detection, echo=TRUE}
 # To explore the limits of detection we will test fluorescence of plasmid #2 
 # (261) detected at 590nm (two plots for two excitation wavelengths).

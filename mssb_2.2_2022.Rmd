@@ -8,6 +8,9 @@ output:
     keep_md: true
 ---
 
+```{r global_options}
+knitr::opts_chunk$set(fig.path='mssb_2.2_2022_files/figure-html')
+```
 
 ## Introduction
 
@@ -28,7 +31,7 @@ We read in two spreadsheets, one with two tabs wherein the second tab shows the 
 
 We then clean the data, removing the contribution of the media from the optical density by subtracting an observed OD value. While there are many ways to do this (using the LB controls, using the lowest value observed on the plate at that timepoint (assuming controls), subtracting the first reading of the sample from all  readings) for this project we subtracted the first reading of the sample from all readings of that sample.
 
-```{r setup, echo=TRUE, message = FALSE}
+```{r setup, echo=TRUE, message = FALSE, class.source = 'fold-hide'}
 
 rm(list = ls());
 setwd("/Users/hensonc/class/UE2.2");

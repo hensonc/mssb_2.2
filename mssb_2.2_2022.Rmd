@@ -4,6 +4,7 @@ author: "Charlotte Henson and Shahaf Cohen"
 date: "October 2022"
 output:
   html_document:
+    toc: true
     code_folding: hide
     keep_md: true
 ---
@@ -29,9 +30,9 @@ Note that the two higher wavelength readings across our replicates used slightly
 Setup and file I/O
 We read in two spreadsheets, one with two tabs wherein the second tab shows the plate map describing the samples loaded in each well of the two plates. We note that the loading was identical in the two plates. Two entire columms of LB per plate serve as an optical control (well names [.]11 and [.]12).
 
-We then clean the data, removing the contribution of the media from the optical density by subtracting an observed OD value. While there are many ways to do this (using the LB controls, using the lowest value observed on the plate at that timepoint (assuming controls), subtracting the first reading of the sample from all  readings) for this project we subtracted the first reading of the sample from all readings of that sample.
+We then clean the data, removing the contribution of the media from the optical density by subtracting an observed OD or initial fluorescent intensity value. While there are many ways to do this (using the LB controls, using the lowest value observed on the plate at that timepoint (assuming controls), subtracting the first reading of the sample from all readings) for this project we subtracted the first reading of the sample from all readings of that sample.
 
-```{r setup, echo=TRUE, message = FALSE, class.source = 'fold-hide'}
+```{r setup, message = FALSE}
 
 rm(list = ls());
 setwd("/Users/hensonc/class/UE2.2");
@@ -70,7 +71,7 @@ plate_start <- as_datetime(d$Time[1])
 plate_end <- as_datetime(h$Time[145])
 time.interval <- plate_start %--% plate_end
 
-# Future to-do: wrap these next three steps in a single loop
+# Future TO-DO: wrap these next three steps in a single loop
 # Adjust the time as entered by the plate reader into hours and fractions of hours
 d$Time <- as.duration(plate_start %--% d$Time) / dhours(1)
 e$Time <- as.duration(plate_start %--% e$Time) / dhours(1)
@@ -218,7 +219,7 @@ nm540_590_all_msd$Treatment <- sub("", "nm540_", nm540_590_all_msd$Treatment)
 
 ### Step 2: plot plate readings
 
-Currently the data is normalized but not filtered, we have seent there is error in the data, at least to the extent that the LB was contaminated and grew. Further the two excitations of mKate are not at the same wavelength, introducing detection artifacts.
+Here we explore the data and see its shape. Currently the data is normalized but not filtered, we have seen there is some error in our data, at least to the extent that the LB was contaminated and grew (we plotted with and without error bars, display without here for simplicity). We will average those readings and they'll mostly cancel out but a future improvement could be to exclude that error. It was at this stage that we noticed the difference in absolute value between intensity at 590 nm excited at 530 vs 540 nm.  
 
 ```{r plot_plate_readings, echo=TRUE, message=FALSE}
 
@@ -395,14 +396,6 @@ We will use OD600 for these comparisons because we're interested in growth, not 
 
 We assume that for OD600 readings replicate samples across plates are equivalent and we averaged the values across the replicates and calculated the growth for each.
 
-To explore the toxicity of producing a fluorescent protein will test plasmid #2 (261) as a control of carrying the burden of a plasmid against the burden of carrying a fluorescent plasmid in #1 (87) and #4 (75).
-
-This comparison is done with the R package statmod, using the function compareGrowthCurves, which will do all pairwise comparisons between groups of growth curves using a permutation test and return observed statistics and the estimated p-value. 
-
-Stat	observed value of the statistic
-P.Value	estimated p-value
-adj.P.Value	p-value adjusted for multiple testing
-
 ```{r growth_curve_comparison, echo=TRUE}
 # Do pairwise comparisons between groups of growth curves at OD600 using a permutation test.
 # 1 is plasmid 87
@@ -471,11 +464,11 @@ myplotly_toxicity_subset_msd
   
 ```
 
-While the p-value led to exploring this plot, and it does appear to show a difference in the growth rates, a Bonferroni correction to counteract the multiple comparisons problem brings the p-value back to insignificance, which makes sense when observing the nature of the samples that are spuriously significant - there is no reason why just the 261 plasmid, grown on arabinose, would be more toxic than the other treatments, including 261 plasmid+integrases grown on arabinose. This was a type 1 error, corrected by multiple hypothesis testing.
+While the p-value led to exploring this plot, and it does appear to show a difference in the growth rates, a Bonferroni correction to counteract the multiple comparisons problem brings the p-value back to insignificance, which makes sense when observing the nature of the samples that are spuriously significant - there is no reason why just the 261 plasmid, grown on arabinose, would be more toxic than the other treatments, including 261 plasmid+integrases grown on arabinose. This was a type 1 error.
 
 ### Step 5: explore limits of detection
 
-Finally we explore the limits of detection given our experimental setup. We plot the detection of plasmid 261 without any integrase in the "mKate" channel (fluorescence intensity at 590 nm). We also plot the untransformed WT _E. coli_. We see the readings are non-zero in the channel, even when reading samples that should not be emitting fluorescence. 
+Finally we explore the limits of detection given our experimental setup. We plot the detection of plasmid 261 without any integrase in the "mKate" channel (fluorescence intensity at 590 nm). We also plot the untransformed WT _E. coli_. We see the readings are non-zero in the channel, even when testing samples that should not be emitting fluorescence. 
 
 ```{r limits_of_detection, echo=TRUE}
 # To explore the limits of detection we will test fluorescence of plasmid #2 
